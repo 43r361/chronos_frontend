@@ -64,13 +64,13 @@ class PriorityListWidget extends StatelessWidget {
                       bool isSelected = selectedTier == priorityList[index];
 
                       return Card(
-                        color: isSelected ? Colors.blue[100] : null, // Highlight selected tier
                         margin: const EdgeInsets.all(8.0),
                         child: ListTile(
                           title: Text(priorityList[index]),
                           trailing: const Icon(Icons.keyboard_arrow_right_outlined),
                           onTap: () {
                             priorityProvider.setSelectedTier(priorityList[index]);
+
                           },
                         ),
                       );
