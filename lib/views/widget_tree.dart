@@ -6,7 +6,7 @@ import 'package:frontend/widgets/navbar_widget.dart';
 
 import '../data/notifiers.dart';
 
-List<Widget> pages = [HomePage(), CalendarPage(), PriorityTierPage(priority: 'Low Priority')];
+List<Widget> pages = [HomePage(), CalendarPage(), PriorityTierPage()];
 
 class WidgetTree extends StatelessWidget {
   const WidgetTree({super.key});

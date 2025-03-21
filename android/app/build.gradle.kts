@@ -39,6 +39,12 @@ android {
     }
 }
 
+dependencies{
+    implementation("androidx.core:core-ktx:2.1.20")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
+}
+
 flutter {
     source = "../.."
 }
