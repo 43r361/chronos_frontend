@@ -17,8 +17,8 @@ class NavbarWidget extends StatelessWidget {
               label: "calendar",
             ),
             NavigationDestination(
-              icon: Icon(Icons.flag),
-              label: "events priorities",
+              icon: Icon(Icons.settings_sharp),
+              label: "priority tier",
             ),
           ],
           selectedIndex: newPageIndex,

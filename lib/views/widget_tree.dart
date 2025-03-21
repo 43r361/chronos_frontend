@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/views/pages/calendar_page.dart';
 import 'package:frontend/views/pages/event_priorities_page.dart';
+import 'package:frontend/views/pages/priority_tier_page.dart';
 import 'package:frontend/views/pages/home_page.dart';
 import 'package:frontend/widgets/navbar_widget.dart';
 
 import '../data/notifiers.dart';
 
-List<Widget> pages = [HomePage(), CalendarPage(), EventPrioritiesPage()];
+List<Widget> pages = [HomePage(), CalendarPage(), PriorityTierPage(priority: 'Low Priority')];
 
 class WidgetTree extends StatelessWidget {
   const WidgetTree({super.key});
@@ -19,7 +20,26 @@ class WidgetTree extends StatelessWidget {
         builder: (context, index, child) => pages.elementAt(index),
       ),
       appBar: AppBar(
-        title: Text("Chronos"),
+        title: ValueListenableBuilder(
+          valueListenable: pageIndex,
+          builder: (context, index, child) {
+            String title;
+            switch (index) {
+            case 0:
+              title = "Home";
+              break;
+            case 1:
+              title = "Calendar";
+              break;
+            case 2:
+              title = "Priority Tier";
+             break;
+           default:
+              title = "Chronos";
+            }
+          return Text(title);
+          },
+        ),
         backgroundColor: Colors.teal,
         centerTitle: true,
         actions: [

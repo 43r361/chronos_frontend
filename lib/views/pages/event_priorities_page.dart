@@ -6,9 +6,23 @@ class EventPrioritiesPage extends StatefulWidget{
   _EventPrioritiesPageState createState() => _EventPrioritiesPageState();
 }
 
-class _EventPrioritiesPageState extends State<EventPrioritiesPage>{
+class _EventPrioritiesPageState extends State<EventPrioritiesPage> {
+  String? selectedPriority;
+
   @override
-  Widget build(BuildContext context){
-    return PriorityListWidget();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Event Priorities'),
+      ),
+      body: PriorityListWidget(
+        onPrioritySelected: (priority) {
+          setState(() {
+            selectedPriority = priority;
+          });
+          print('Selected Priority: $priority');
+        },
+      ),
+    );
   }
 }
