@@ -1,54 +1,101 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/data/priority_provider.dart';
 
 class PriorityListWidget extends StatelessWidget {
-  final List<String> priorities = [
-    'Low Priority',
-    'Medium Priority',
-    'High Priority',
-    'Critical Priority',
-  ];
+  final PriorityProvider priorityProvider;
+
+  const PriorityListWidget({Key? key, required this.priorityProvider}) : super(key: key);
+
+  Future<String?> _showAddTierDialog(BuildContext context) async {
+    TextEditingController controller = TextEditingController();
+
+    return showDialog<String>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add New Priority Tier'),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            decoration: const InputDecoration(
+              hintText: 'Enter tier name',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, null),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (controller.text.trim().isNotEmpty) {
+                  Navigator.pop(context, controller.text.trim());
+                }
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _addNewTier(BuildContext context) async {
+    String? newTierName = await _showAddTierDialog(context);
+    if (newTierName != null && newTierName.isNotEmpty) {
+      priorityProvider.addPriority(newTierName);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Event Priorities'),
-      ),
-      body: ListView.builder(
-        itemCount: priorities.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: EdgeInsets.all(8.0),
-            child: ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-              title: Text(priorities[index]),
-              trailing: PopupMenuButton<String>(
-                icon: Icon(Icons.arrow_drop_down),
-                onSelected: (String value) {
-                  // Handle selection here
-                  print('Selected: $value');
+    return Column(
+      children: [
+        Expanded(
+          child: ValueListenableBuilder<List<String>>(
+            valueListenable: priorityProvider.priorities,
+            builder: (context, priorityList, child) {
+              return ListView.builder(
+                itemCount: priorityList.length,
+                itemBuilder: (context, index) {
+                  return ValueListenableBuilder<String?>(
+                    valueListenable: priorityProvider.selectedTier,
+                    builder: (context, selectedTier, child) {
+                      bool isSelected = selectedTier == priorityList[index];
+
+                      return Card(
+                        color: isSelected ? Colors.blue[100] : null, // Highlight selected tier
+                        margin: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                          title: Text(priorityList[index]),
+                          trailing: const Icon(Icons.keyboard_arrow_right_outlined),
+                          onTap: () {
+                            priorityProvider.setSelectedTier(priorityList[index]);
+                          },
+                        ),
+                      );
+                    },
+                  );
                 },
-                itemBuilder: (BuildContext context) {
-                  return [
-                    PopupMenuItem<String>(
-                      value: 'Edit',
-                      child: Text('Edit'),
-                    ),
-                    PopupMenuItem<String>(
-                      value: 'Delete',
-                      child: Text('Delete'),
-                    ),
-                    PopupMenuItem<String>(
-                      value: 'Mark as Completed',
-                      child: Text('Mark as Completed'),
-                    ),
-                  ];
-                },
-              ),
+              );
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ElevatedButton(
+            onPressed: () => _addNewTier(context),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.add),
+                SizedBox(width: 8),
+                Text('Add New Tier'),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        ),
+      ],
     );
   }
 }
