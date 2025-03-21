@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/data/notifiers.dart';
+import 'package:frontend/views/pages/login_page.dart';
 import 'package:frontend/views/widget_tree.dart';
 
 void main() {
