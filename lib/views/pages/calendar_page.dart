@@ -80,6 +80,20 @@ class _CalendarPageState extends State<CalendarPage> {
     }
   }
 
+  Color _getPriorityColor(String priority) {
+    switch (priority) {
+      case 'High':
+        return Colors.red;
+      case 'Medium':
+        return Colors.orange;
+      case 'Low':
+        return Colors.green;
+      default:
+        return Colors.blueGrey;
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -129,10 +143,40 @@ class _CalendarPageState extends State<CalendarPage> {
                       border: Border.all(),
                       borderRadius: BorderRadius.circular(12.0),
                     ),
-                    child: ListTile(
-                      onTap: () => print('${value[index]}'),
-                      title: Text('${value[index]}'),
-                    ),
+                    child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      value[index].title,
+                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      '${value[index].startTime.hour}:${value[index].startTime.minute.toString().padLeft(2, '0')} - '
+                                      '${value[index].endTime.hour}:${value[index].endTime.minute.toString().padLeft(2, '0')}',
+                                      style: const TextStyle(color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: _getPriorityColor(value[index].priority),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Text(
+                                    value[index].priority,
+                                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+
                   );
                 },
               );
