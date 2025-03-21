@@ -1,46 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/data/priority_provider.dart';
 import 'package:frontend/widgets/priorities_list_widget.dart';
 
-class PriorityTierPage extends StatefulWidget {
-  final String priority;
+class PriorityTierPage extends StatelessWidget {
+  final PriorityProvider priorityProvider = PriorityProvider();
 
-  const PriorityTierPage({super.key, required this.priority});
-
-  @override
-  _PriorityTierPageState createState() => _PriorityTierPageState();
-}
-
-class _PriorityTierPageState extends State<PriorityTierPage> {
-  late String _currentPriority;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentPriority = widget.priority;
-  }
-
-  void _updatePriority(String newPriority) {
-    setState(() {
-      _currentPriority = newPriority; 
-    });
-  }
+  PriorityTierPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Priority Tier: $_currentPriority"),
-      ),
-      drawer: Drawer(
-        child: PriorityListWidget(
-          onPrioritySelected: (selectedPriority) {
-            Navigator.pop(context);
-            _updatePriority(selectedPriority);
+        title: ValueListenableBuilder<String?>(
+          valueListenable: priorityProvider.selectedTier,
+          builder: (context, selectedTier, child) {
+            return Text(
+              selectedTier ?? "Select a Priority",
+              style: const TextStyle(fontSize: 20),
+            );
           },
         ),
       ),
+      drawer: Drawer(
+        child: PriorityListWidget(priorityProvider: priorityProvider),
+      ),
       body: Center(
-        child: Text('Selected Priority: $_currentPriority'),
+        child: ValueListenableBuilder<String?>(
+          valueListenable: priorityProvider.selectedTier,
+          builder: (context, selectedTier, child) {
+            return Text(
+              selectedTier != null
+                  ? "Selected Priority: $selectedTier"
+                  : "No Priority Selected",
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            );
+          },
+        ),
       ),
     );
   }

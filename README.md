@@ -1,16 +1,6 @@
-# frontend
+# Chronos
 
-A new Flutter project.
+Chronos е приложение за разпределение на време, но на ново ниво! То не само визуализира програмата и календара Ви, но Ви позволява и да изключите избрани от вас разсейващи приложения на телефона си. Освен това, за разлика от обикновениете календари, то смята и времето за придвижване до всяко събитие в програмата Ви, и Ви предупреждава по избран от вас начин. Всичко това става с едно докосване, без да губите допълнително време, докато Chronos ви пести време.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## за фронтенда
+ to be cont'd
