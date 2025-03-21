@@ -8,19 +8,22 @@ class PriorityListWidget extends StatelessWidget {
     'Critical Priority',
   ];
 
+  PriorityListWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Event Priorities'),
-      ),
+      appBar: AppBar(title: Text('Event Priorities')),
       body: ListView.builder(
         itemCount: priorities.length,
         itemBuilder: (context, index) {
           return Card(
             margin: EdgeInsets.all(8.0),
             child: ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 12.0,
+              ),
               title: Text(priorities[index]),
               trailing: PopupMenuButton<String>(
                 icon: Icon(Icons.arrow_drop_down),
@@ -30,10 +33,7 @@ class PriorityListWidget extends StatelessWidget {
                 },
                 itemBuilder: (BuildContext context) {
                   return [
-                    PopupMenuItem<String>(
-                      value: 'Edit',
-                      child: Text('Edit'),
-                    ),
+                    PopupMenuItem<String>(value: 'Edit', child: Text('Edit')),
                     PopupMenuItem<String>(
                       value: 'Delete',
                       child: Text('Delete'),
