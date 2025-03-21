@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../data/event_hardcoded.dart';
+import '../../data/notifiers.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
@@ -14,8 +15,7 @@ class _CalendarPageState extends State<CalendarPage> {
   late final ValueNotifier<List<Event>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode =
-      RangeSelectionMode
-          .toggledOff; // Can be toggled on/off by longpressing a date
+      RangeSelectionMode.toggledOff; // Can be toggled on/off by longpressing a date
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   DateTime? _rangeStart;
@@ -93,7 +93,6 @@ class _CalendarPageState extends State<CalendarPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -144,39 +143,128 @@ class _CalendarPageState extends State<CalendarPage> {
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                     child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      value[index].title,
-                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      '${value[index].startTime.hour}:${value[index].startTime.minute.toString().padLeft(2, '0')} - '
-                                      '${value[index].endTime.hour}:${value[index].endTime.minute.toString().padLeft(2, '0')}',
-                                      style: const TextStyle(color: Colors.grey),
-                                    ),
-                                  ],
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                value[index].title,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              ),
+                              Text(
+                                '${value[index].startTime.hour}:${value[index].startTime.minute.toString().padLeft(2, '0')} - '
+                                '${value[index].endTime.hour}:${value[index].endTime.minute.toString().padLeft(2, '0')}',
+                                style: const TextStyle(color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                          ValueListenableBuilder<bool>(
+                            valueListenable: isDarkTheme,
+                            builder: (context, isDark, _) {
+                              return DropdownButtonHideUnderline(
+                                child: Container(
                                   decoration: BoxDecoration(
-                                    color: _getPriorityColor(value[index].priority),
-                                    borderRadius: BorderRadius.circular(16),
+                                    color: _getPriorityColor(
+                                      value[index].priority,
+                                    ), // Button color matches priority
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: Text(
-                                    value[index].priority,
-                                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  child: DropdownButton<String>(
+                                    value: value[index].priority,
+                                    menuMaxHeight:
+                                        250, // Enables scrolling if there are too many items
+                                    icon: const Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Colors.white,
+                                    ),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    dropdownColor:
+                                        isDark ? Colors.grey[850] : Colors.white, // Dark or Light mode
+                                    onChanged: (newPriority) {
+                                      if (newPriority != null) {
+                                        setState(() {
+                                          value[index] = Event(
+                                            title: value[index].title,
+                                            startTime: value[index].startTime,
+                                            endTime: value[index].endTime,
+                                            priority: newPriority,
+                                          );
+                                          _selectedEvents.value = List.from(
+                                            value,
+                                          ); // Update UI
+                                        });
+                                      }
+                                    },
+                                    items: [
+                                      'Low',
+                                      'Medium',
+                                      'High',
+                                      'Critical',
+                                      'Optional',
+                                      'Urgent',
+                                      'Review',
+                                      'On Hold',
+                                      'Completed',
+                                      'In Progress',
+                                    ].map<DropdownMenuItem<String>>((String priority) {
+                                      bool isPriorityTier = [
+                                        'Low',
+                                        'Medium',
+                                        'High',
+                                        'Critical',
+                                        'Optional',
+                                      ].contains(priority);
+
+                                      return DropdownMenuItem<String>(
+                                        value: priority,
+                                        child: Container(
+                                          width: 120, // Consistent width
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 6,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: isPriorityTier
+                                                ? _getPriorityColor(priority) // Priority tiers are colored
+                                                : (isDark
+                                                    ? Colors.grey[900]
+                                                    : Colors.white), // Match theme
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Text(
+                                            priority,
+                                            style: TextStyle(
+                                              color: isPriorityTier
+                                                  ? Colors.white
+                                                  : (isDark
+                                                      ? Colors.white
+                                                      : Colors.black), // Dynamic text color
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
                                   ),
                                 ),
-                              ],
-                            ),
-                          )
-
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   );
                 },
               );
