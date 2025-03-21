@@ -93,7 +93,6 @@ class _CalendarPageState extends State<CalendarPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -144,39 +143,84 @@ class _CalendarPageState extends State<CalendarPage> {
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                     child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      value[index].title,
-                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      '${value[index].startTime.hour}:${value[index].startTime.minute.toString().padLeft(2, '0')} - '
-                                      '${value[index].endTime.hour}:${value[index].endTime.minute.toString().padLeft(2, '0')}',
-                                      style: const TextStyle(color: Colors.grey),
-                                    ),
-                                  ],
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                value[index].title,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    color: _getPriorityColor(value[index].priority),
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: Text(
-                                    value[index].priority,
-                                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
+                              ),
+                              Text(
+                                '${value[index].startTime.hour}:${value[index].startTime.minute.toString().padLeft(2, '0')} - '
+                                '${value[index].endTime.hour}:${value[index].endTime.minute.toString().padLeft(2, '0')}',
+                                style: const TextStyle(color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                          DropdownButton<String>(
+                            value: value[index].priority,
+                            dropdownColor: Colors.white,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
                             ),
-                          )
-
+                            onChanged: (newPriority) {
+                              if (newPriority != null) {
+                                setState(() {
+                                  value[index] = Event(
+                                    title: value[index].title,
+                                    startTime: value[index].startTime,
+                                    endTime: value[index].endTime,
+                                    priority: newPriority,
+                                  );
+                                  _selectedEvents.value = List.from(
+                                    value,
+                                  ); // Update UI
+                                });
+                              }
+                            },
+                            items:
+                                [
+                                  'Low',
+                                  'Medium',
+                                  'High',
+                                  'Critical',
+                                  'Optional',
+                                ] // Extendable List
+                                .map<DropdownMenuItem<String>>((
+                                  String priority,
+                                ) {
+                                  return DropdownMenuItem<String>(
+                                    value: priority,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: _getPriorityColor(priority),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        priority,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                          ),
+                        ],
+                      ),
+                    ),
                   );
                 },
               );
