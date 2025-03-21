@@ -17,7 +17,6 @@ class _PriorityListWidgetState extends State<PriorityListWidget> {
     'Critical Priority',
   ];
 
-<<<<<<< HEAD
   Future<String?> _showAddTierDialog(BuildContext context) async {
   TextEditingController controller = TextEditingController();
 
@@ -64,14 +63,10 @@ class _PriorityListWidgetState extends State<PriorityListWidget> {
       widget.onPrioritySelected(newTierName!);
     }
   }
-=======
-  PriorityListWidget({super.key});
->>>>>>> 4364b6ae6d41847d35af7de07e5fe460983c42f8
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-<<<<<<< HEAD
       appBar: AppBar(
         title: Text('Event Priorities'),
       ),
@@ -106,39 +101,6 @@ class _PriorityListWidgetState extends State<PriorityListWidget> {
                   SizedBox(width: 8),
                   Text('Add New Tier'),
                 ],
-=======
-      appBar: AppBar(title: Text('Event Priorities')),
-      body: ListView.builder(
-        itemCount: priorities.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: EdgeInsets.all(8.0),
-            child: ListTile(
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 12.0,
-              ),
-              title: Text(priorities[index]),
-              trailing: PopupMenuButton<String>(
-                icon: Icon(Icons.arrow_drop_down),
-                onSelected: (String value) {
-                  // Handle selection here
-                  print('Selected: $value');
-                },
-                itemBuilder: (BuildContext context) {
-                  return [
-                    PopupMenuItem<String>(value: 'Edit', child: Text('Edit')),
-                    PopupMenuItem<String>(
-                      value: 'Delete',
-                      child: Text('Delete'),
-                    ),
-                    PopupMenuItem<String>(
-                      value: 'Mark as Completed',
-                      child: Text('Mark as Completed'),
-                    ),
-                  ];
-                },
->>>>>>> 4364b6ae6d41847d35af7de07e5fe460983c42f8
               ),
             ),
           ),

@@ -9,7 +9,6 @@ class EventPrioritiesPage extends StatefulWidget {
 }
 
 class _EventPrioritiesPageState extends State<EventPrioritiesPage> {
-<<<<<<< HEAD
   String? selectedPriority;
 
   @override
@@ -27,10 +26,5 @@ class _EventPrioritiesPageState extends State<EventPrioritiesPage> {
         },
       ),
     );
-=======
-  @override
-  Widget build(BuildContext context) {
-    return PriorityListWidget();
->>>>>>> 4364b6ae6d41847d35af7de07e5fe460983c42f8
   }
 }

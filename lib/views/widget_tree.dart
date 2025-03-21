@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/views/pages/calendar_page.dart';
-import 'package:frontend/views/pages/event_priorities_page.dart';
 import 'package:frontend/views/pages/priority_tier_page.dart';
 import 'package:frontend/views/pages/home_page.dart';
 import 'package:frontend/widgets/navbar_widget.dart';
