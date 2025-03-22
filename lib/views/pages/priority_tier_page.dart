@@ -49,9 +49,9 @@ class PriorityTierPage extends StatelessWidget {
                   ),
                 );
               },
-              borderRadius: BorderRadius.circular(8), // Optional tap effect
+              borderRadius: BorderRadius.circular(8),
               child: Padding(
-                padding: const EdgeInsets.all(8.0), // Makes it easier to tap
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -62,7 +62,7 @@ class PriorityTierPage extends StatelessWidget {
                     const SizedBox(width: 10),
                     const Icon(Icons.app_blocking, size: 30),
                     const SizedBox(width: 10),
-                    const Icon(Icons.keyboard_arrow_right_outlined, size: 30), // Left-pointing arrow
+                    const Icon(Icons.keyboard_arrow_right_outlined, size: 30),
                   ],
                 ),
               ),

@@ -66,4 +66,9 @@ class MainActivity : FlutterActivity() {
         val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
         startActivity(intent)
     }
+
+    private fun openSetings() {
+        val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+        startActivity(intent)
+    }
 }
