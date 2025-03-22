@@ -1,6 +1,8 @@
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frontend/data/app_model.dart';
+import 'package:frontend/data/available_applications.dart';
 
 class ApplicationsRestrictionsPage extends StatefulWidget {
   @override
@@ -10,78 +12,71 @@ class ApplicationsRestrictionsPage extends StatefulWidget {
 
 class _ApplicationsRestrictionsPageState
     extends State<ApplicationsRestrictionsPage> {
-  static const platform = MethodChannel('com.example.frontend/app_usage');
-  Map<String, dynamic> _appUsageMap = {};
-  Map<String, int> _appLimits = {};
+  static const platform = MethodChannel('com.example.frontend/app_management');
+  List<String> _appList = [];
 
   @override
   void initState() {
     super.initState();
-    _getInstalledAppsWithUsage();
+    _checkPlatformAndInitialize();
   }
 
-  Future<void> _getInstalledAppsWithUsage() async {
-    try {
-      final Map<dynamic, dynamic> appsWithUsage =
-          await platform.invokeMethod('getInstalledAppsWithUsage');
-      setState(() {
-        _appUsageMap = appsWithUsage.cast<String, dynamic>();
-      });
-    } on PlatformException catch (e) {
-      print("Failed to get app usage: '${e.message}'.");
-      if (Platform.isIOS) {
-        // Handle iOS specific error, e.g., prompt user to enable Screen Time.
-        // You might want to navigate to settings or show an alert.
-        _showScreenTimeAlert();
-      }
+  Future<void> _checkPlatformAndInitialize() async {
+    if (Platform.isAndroid) {
+      await _getInstalledApps(); // Call method for Android
+    } else if (Platform.isIOS) {
+      await _openSettings(); // Open settings for iOS
     }
   }
 
-  void _showScreenTimeAlert() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Screen Time Required'),
-          content: Text(
-              'Please enable Screen Time for this app to function properly.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Settings'),
-              onPressed: () {
-                platform.invokeMethod('openSettings');
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+  Future<void> _getInstalledApps() async {
+    try {
+      final List<dynamic> appList = await platform.invokeMethod('getInstalledApps');
+      setState(() {
+        _appList = appList.cast<String>();
+      });
+      // Directly update AvailableApplications without Provider
+      AvailableApplications availableApps = AvailableApplications();
+      availableApps.apps.clear();
+      for (final appName in _appList) {
+        availableApps.addApp(AppModel(
+            name: appName, showingNotifications: false, allowedUsing: true));
+      }
+      // You may need to find a way to update the UI if AvailableApplications is not a ChangeNotifier
+    } on PlatformException catch (e) {
+      print("Failed to get app list: '${e.message}'.");
+    }
   }
 
-  @override
+  Future<void> _openSettings() async {
+    try {
+      await platform.invokeMethod('openSettings');
+    } on PlatformException catch (e) {
+      print("Failed to open settings: '${e.message}'.");
+    }
+  }
+
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('App Usage'),
+        title: Text('Available Apps'),
       ),
-      body: ListView.builder(
-        itemCount: _appUsageMap.length,
-        itemBuilder: (context, index) {
-          final app = _appUsageMap.keys.elementAt(index);
-          final usage = _appUsageMap[app];
-          return ListTile(
-            title: Text(app),
-            subtitle: Text('Usage: ${usage}ms'),
-          );
-        },
-      ),
+      body: _appList.isEmpty
+          ? Center(
+              child: Platform.isIOS
+                  ? Text('Please enable Screen Time in Settings.')
+                  : Text('No apps found.'),
+            )
+          : ListView.builder(
+              itemCount: _appList.length,
+              itemBuilder: (context, index) {
+                final app = _appList[index];
+                return ListTile(
+                  title: Text(app),
+                );
+              },
+            ),
     );
   }
 }
