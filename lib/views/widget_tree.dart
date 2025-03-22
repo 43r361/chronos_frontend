@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/views/pages/applications_restrictions_page.dart';
 import 'package:frontend/views/pages/calendar_page.dart';
 import 'package:frontend/views/pages/priority_tier_page.dart';
 import 'package:frontend/views/pages/login_page.dart';
@@ -34,6 +35,9 @@ class WidgetTree extends StatelessWidget {
             case 2:
               title = "Priority Tier";
              break;
+            case 3:
+              title = "Applications Restrictions";
+              break;
            default:
               title = "Chronos";
             }
