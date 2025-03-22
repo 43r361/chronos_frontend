@@ -111,7 +111,19 @@ class _PriorityTierPageState extends State<PriorityTierPage> {
   }
 }
 
-class BlockedAppsPage extends StatelessWidget {
+class BlockedAppsPage extends StatefulWidget {
+  @override
+  _BlockedAppsPageState createState() => _BlockedAppsPageState();
+}
+
+class _BlockedAppsPageState extends State<BlockedAppsPage> {
+  // State to track whether each app is blocked or not
+  final Map<String, bool> _appBlockedStatus = {
+    'Instagram': false,
+    'TikTok': false,
+    'Youtube': false,
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,23 +131,30 @@ class BlockedAppsPage extends StatelessWidget {
         title: Text("Blocked Apps"),
       ),
       body: ListView(
-        children: [
-          ListTile(
+        children: _appBlockedStatus.entries.map((entry) {
+          final appName = entry.key;
+          final isBlocked = entry.value;
+
+          return ListTile(
             leading: Icon(Icons.apps),
-            title: Text("App 1"),
-            trailing: Icon(Icons.block, color: Colors.red),
-          ),
-          ListTile(
-            leading: Icon(Icons.apps),
-            title: Text("App 2"),
-            trailing: Icon(Icons.block, color: Colors.red),
-          ),
-          ListTile(
-            leading: Icon(Icons.apps),
-            title: Text("App 3"),
-            trailing: Icon(Icons.block, color: Colors.red),
-          ),
-        ],
+            title: Text(appName),
+            trailing: Switch(
+              value: isBlocked,
+              onChanged: (value) {
+                setState(() {
+                  _appBlockedStatus[appName] = value; // Update the state
+                });
+                // Add logic here to block/unblock the app
+                if (value) {
+                  print('$appName is now blocked');
+                } else {
+                  print('$appName is now unblocked');
+                }
+              },
+              activeColor: Colors.red, // Customize the switch color
+            ),
+          );
+        }).toList(),
       ),
     );
   }
