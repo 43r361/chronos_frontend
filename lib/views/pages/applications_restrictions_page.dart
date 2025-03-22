@@ -13,7 +13,8 @@ class ApplicationsRestrictionsPage extends StatefulWidget {
 class _ApplicationsRestrictionsPageState
     extends State<ApplicationsRestrictionsPage> {
   static const platform = MethodChannel('com.example.frontend/app_management');
-  List<String> _appList = [];
+  List<AppModel> _appModels = [];
+  bool _isLoading = true; // Add loading state
 
   @override
   void initState() {
@@ -23,26 +24,22 @@ class _ApplicationsRestrictionsPageState
 
   Future<void> _checkPlatformAndInitialize() async {
     if (Platform.isAndroid) {
-      await _getInstalledApps(); // Call method for Android
+      await _getInstalledApps();
     } else if (Platform.isIOS) {
-      await _openSettings(); // Open settings for iOS
+      await _openSettings();
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> _getInstalledApps() async {
     try {
       final List<dynamic> appList = await platform.invokeMethod('getInstalledApps');
       setState(() {
-        _appList = appList.cast<String>();
+        _appModels = appList.cast<String>().map((appName) => AppModel(
+            name: appName, showingNotifications: false, allowedUsing: true)).toList();
       });
-      // Directly update AvailableApplications without Provider
-      AvailableApplications availableApps = AvailableApplications();
-      availableApps.apps.clear();
-      for (final appName in _appList) {
-        availableApps.addApp(AppModel(
-            name: appName, showingNotifications: false, allowedUsing: true));
-      }
-      // You may need to find a way to update the UI if AvailableApplications is not a ChangeNotifier
     } on PlatformException catch (e) {
       print("Failed to get app list: '${e.message}'.");
     }
@@ -56,27 +53,38 @@ class _ApplicationsRestrictionsPageState
     }
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Available Apps'),
+        title: Text('Manage Blocked Apps'),
       ),
-      body: _appList.isEmpty
-          ? Center(
-              child: Platform.isIOS
-                  ? Text('Please enable Screen Time in Settings.')
-                  : Text('No apps found.'),
-            )
-          : ListView.builder(
-              itemCount: _appList.length,
-              itemBuilder: (context, index) {
-                final app = _appList[index];
-                return ListTile(
-                  title: Text(app),
-                );
-              },
-            ),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator()) 
+          : _appModels.isEmpty
+              ? Center(
+                  child: Platform.isIOS
+                      ? Text('Please enable Screen Time in Settings.')
+                      : Text('No apps found.'),
+                )
+              : ListView.builder(
+                  itemCount: _appModels.length,
+                  itemBuilder: (context, index) {
+                    final app = _appModels[index];
+                    return ListTile(
+                      leading: Icon(Icons.apps),
+                      title: Text(app.name),
+                      trailing: Switch(
+                        value: app.allowedUsing,
+                        onChanged: (bool value) {
+                          setState(() {
+                            app.allowedUsing = value;
+                          });
+                        },
+                      ),
+                    );
+                  },
+                ),
     );
   }
 }

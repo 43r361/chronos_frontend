@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'app_model.dart';
 
 class AvailableApplications extends ChangeNotifier {
-  List<AppModel> _apps = [];
+  List<AppModel> _apps = [
+    AppModel(name: "Instagram", showingNotifications: true, allowedUsing: true),
+    AppModel(name: "TikTok", showingNotifications: false, allowedUsing: false),
+    AppModel(name: "YouTube", showingNotifications: true, allowedUsing: false),
+    // Add more dummy apps as needed
+  ];
 
   List<AppModel> get apps => _apps;
 
